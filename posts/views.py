@@ -1,5 +1,5 @@
-from django.shortcuts import HttpResponse
-from datetime import datetime
+from django.shortcuts import HttpResponse, render
+from posts.models import Product
 
 # Create your views here.
 """ MVC - Model View Controller """
@@ -7,17 +7,15 @@ from datetime import datetime
 """ Controller's """
 
 
-def hello_view(request):
+def main_view(request):
     if request.method == 'GET':
-        return HttpResponse("Hello! Its my project")
+        return render(request, 'layouts/index.html')
 
 
-def now_date_view(request):
+def products_view(request):
     if request.method == 'GET':
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return HttpResponse("Date: " + now)
-
-
-def goodby_view(request):
-    if request.method == 'GET':
-        return HttpResponse("Goodby user!")
+        products = Product.objects.all()
+        context = {
+            'products': products
+        }
+        return render(request, 'products/products.html', context=context)
