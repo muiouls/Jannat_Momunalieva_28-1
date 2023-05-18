@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
 
-from posts.views import main_view, products_view
+from posts.views import main_view, products_view, product_detail_view
+from HW_django_month4 import settings
 
 
 """
@@ -34,4 +36,7 @@ urlpatterns = [
 
     path('', main_view),
     path('products/', products_view),
+    path('products/<int:id>/', product_detail_view),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
