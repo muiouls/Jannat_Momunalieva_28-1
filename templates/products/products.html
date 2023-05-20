@@ -1,25 +1,34 @@
 {% extends 'layouts/index.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'products.css' %}">
+{% endblock %}
 
 {% block content %}
-
-<style type="text/css">
-    .products {
-        width: 80%;
-        margin-left: 10%;
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
-</style>
-
-
     <div class="products">
         {% for product in products %}
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.title }}</h5>
+                    {% if product.quantity < 2 %}
+                        <h5 class="card-title" style="color: red">
+                            {{ product.title }}
+                        </h5>
+                    {% else %}
+                        <h5 class="card-title">{{ product.title }}</h5>
+                    {% endif %}
+
                     <h6 class="card-subtitle mb-2 text-muted">Rate: {{ product.rate }}</h6>
-                    <a href="/products/{{ product.id }}/" class="card-link">More</a>
+
+                    {% if product.price > 2000 %}
+                        <p class="high-price">Price: ${{ product.price }}</p>
+                    {% elif product.price > 1000 %}
+                        <p class="medium-price">Price: ${{ product.price }}</p>
+                    {% else %}
+                        <p class="low-price">Price: ${{ product.price }}</p>
+                    {% endif %}
+
+                    <a href="/products/{{ product.id }}" class="card-link">More</a>
                 </div>
             </div>
         {% endfor %}

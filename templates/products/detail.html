@@ -1,4 +1,5 @@
 {% extends 'layouts/index.html' %}
+{% load static %}
 
 {% block content %}
     <style type="text/css">
@@ -23,8 +24,14 @@
             padding: 10px;
         }
     </style>
+
     <div class="product_block">
+    {% if product.image %}
         <img src="/media/{{ product.image }}" alt=""/>
+    {% else %}
+        <img src="{% static 'img.jpg' %}" alt=""/>
+    {% endif %}
+
         <h1>{{ product.title }} <br> Rate: {{ product.rate }}</h1>
         <h5>{{ product.description }}</h5>
 

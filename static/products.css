@@ -1,0 +1,21 @@
+.products {
+        width: 80%;
+        margin-left: 10%;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+.high-price {
+  color: red;
+  font-weight: bold;
+}
+
+.medium-price {
+  color: orange;
+}
+
+.low-price {
+  color: green;
+}
