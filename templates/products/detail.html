@@ -40,6 +40,14 @@
             <h5> {{ product.modified_date }}</h5>
         </div>
 
+        <div class="comments_create">
+            <form action="/products/{{ product.id }}/" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="comment">
+            </form>
+        </div>
+
         <div class="comments">
             {% for comment in comments %}
                 <div class="comment_block">
