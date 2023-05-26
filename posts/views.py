@@ -18,7 +18,8 @@ def products_view(request):
     if request.method == 'GET':
         products = Product.objects.all()
         context = {
-            'products': products
+            'products': products,
+            'user': request.user
         }
         return render(request, 'products/products.html', context=context)
 

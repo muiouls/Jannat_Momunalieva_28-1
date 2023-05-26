@@ -41,11 +41,15 @@
         </div>
 
         <div class="comments_create">
-            <form action="/products/{{ product.id }}/" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" value="comment">
-            </form>
+            {% if user.is_authenticated %}
+                <form action="/products/{{ product.id }}/" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="comment">
+                </form>
+            {% else %}
+                <p>Пожалуйста, авторизуйтесь, чтобы оставить отзыв.</p>
+            {% endif %}
         </div>
 
         <div class="comments">
