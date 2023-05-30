@@ -6,31 +6,49 @@
 {% endblock %}
 
 {% block content %}
+    <div class='search'>
+        <form action="/products/" method="get">
+            <input type="text" name="search">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+
     <div class="products">
         {% for product in products %}
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    {% if product.quantity < 2 %}
-                        <h5 class="card-title" style="color: red">
-                            {{ product.title }}
-                        </h5>
-                    {% else %}
-                        <h5 class="card-title">{{ product.title }}</h5>
-                    {% endif %}
+             {% if not search or search in product.title|lower or search in product.description|lower %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        {% if product.quantity < 2 %}
+                            <h5 class="card-title" style="color: red">
+                                {{ product.title }}
+                            </h5>
+                        {% else %}
+                            <h5 class="card-title">{{ product.title }}</h5>
+                        {% endif %}
 
-                    <h6 class="card-subtitle mb-2 text-muted">Rate: {{ product.rate }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Rate: {{ product.rate }}</h6>
 
-                    {% if product.price > 2000 %}
-                        <p class="high-price">Price: ${{ product.price }}</p>
-                    {% elif product.price > 1000 %}
-                        <p class="medium-price">Price: ${{ product.price }}</p>
-                    {% else %}
-                        <p class="low-price">Price: ${{ product.price }}</p>
-                    {% endif %}
+                        {% if product.price > 2000 %}
+                            <p class="high-price">Price: ${{ product.price }}</p>
+                        {% elif product.price > 1000 %}
+                            <p class="medium-price">Price: ${{ product.price }}</p>
+                        {% else %}
+                            <p class="low-price">Price: ${{ product.price }}</p>
+                        {% endif %}
 
-                    <a href="/products/{{ product.id }}" class="card-link">More</a>
+                        <a href="/products/{{ product.id }}" class="card-link">More</a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="pages">
+        {% for page in pages %}
+            <a href="/products/?page={{ page }}">
+                <button>
+                    {{ page }}
+                </button>
+            </a>
         {% endfor %}
     </div>
 
