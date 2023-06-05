@@ -2,6 +2,7 @@ from django.shortcuts import HttpResponse, render, redirect
 from posts.models import Product, Review
 from posts.forms import ProductCreateForm, ReviewCreateForm
 from posts.constants import PAGINATION_LIMIT
+from django.views.generic import ListView, FormView, DetailView
 
 
 # Create your views here.
@@ -10,14 +11,18 @@ from posts.constants import PAGINATION_LIMIT
 """ Controller's """
 
 
-def main_view(request):
-    if request.method == 'GET':
-        return render(request, 'layouts/index.html')
+class MainPageCBV(ListView):
+    model = Product
+    template_name = 'layouts/index.html'
 
 
-def products_view(request):
-    if request.method == 'GET':
-        products = Product.objects.all()
+class ProductsCBV(ListView):
+    model = Product
+    queryset = Product.objects.all()
+    template_name = 'products/products.html'
+
+    def get(self, request, *args, **kwargs):
+        products = self.queryset
         search = request.GET.get('search')
         page = int(request.GET.get('page', 1))
         max_page = products.__len__() / PAGINATION_LIMIT
@@ -35,35 +40,27 @@ def products_view(request):
             'pages': range(1, max_page + 1)
 
         }
-        return render(request, 'products/products.html', context=context)
+        return render(request, self.template_name, context=context)
 
 
-def product_detail_view(request, id, **kwargs):
-    if request.method == 'GET':
-        product = Product.objects.get(id=id)
+class ProductDetailCBV(DetailView, FormView):
+    model = Product
+    template_name = 'products/detail.html'
+    form_class = ReviewCreateForm
+    pk_url_kwarg = 'id'
 
-        context = {
-            'product': product,
-            'comments': product.review_set.all(),
-            'form': ReviewCreateForm
-        }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = Review.objects.filter(product=self.object)
+        return context
 
-        return render(request, 'products/detail.html', context=context)
-
-    if request.method == 'POST':
-        form = ReviewCreateForm(request.POST)
-        if form.is_valid():
-            product = Product.objects.get(id=id)
-            Review.objects.create(
-                text=form.cleaned_data.get('text'),
-                product=product
-            )
-
-            return redirect('/products/')
-
-        return render(request, 'products/detail.html', context={
-            'form': form
-        })
+    def form_valid(self, form):
+        product = self.get_object()
+        Review.objects.create(
+            text=form.cleaned_data.get('text'),
+            product_id=product.id
+        )
+        return redirect(f'/products/{product.id}/')
 
 
 def product_create_view(request):
